@@ -92,9 +92,9 @@ BEGIN
             VALUE "CompanyName", "Rayan Samaneh Arka" "\0"
             VALUE "FileDescription", "Arka Remote Desktop" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "rustdesk" "\0"
+            VALUE "InternalName", "arka" "\0"
             VALUE "LegalCopyright", "Copyright © 2026 Rayan Samaneh Arka. All rights reserved." "\0"
-            VALUE "OriginalFilename", "rustdesk.exe" "\0"
+            VALUE "OriginalFilename", "arka.exe" "\0"
             VALUE "ProductName", "Arka" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END

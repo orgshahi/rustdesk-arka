@@ -4,7 +4,10 @@ project(rustdesk LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "rustdesk")
+# ARKA: output exe name -> arka.exe. Must match APP_NAME.to_lowercase() ("arka")
+# so the tray relaunch and updater (which derive the exe name from the app name)
+# find it. Was "rustdesk".
+set(BINARY_NAME "arka")
 
 # Explicitly opt into modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

@@ -69,7 +69,11 @@ lazy_static::lazy_static! {
     static ref ONLINE: Mutex<HashMap<String, i64>> = Default::default();
     pub static ref PROD_RENDEZVOUS_SERVER: RwLock<String> = RwLock::new("".to_owned());
     pub static ref EXE_RENDEZVOUS_SERVER: RwLock<String> = Default::default();
-    pub static ref APP_NAME: RwLock<String> = RwLock::new("RustDesk".to_owned());
+    // ARKA: app identity. Drives window title, config dir (%AppData%\Arka), URI
+    // scheme (arka://), tray relaunch and updater exe name (arka.exe), and makes
+    // is_custom_client() true (upstream hides RustDesk-specific branding). Keep in
+    // sync with BINARY_NAME "arka" in flutter/windows/CMakeLists.txt. Was "RustDesk".
+    pub static ref APP_NAME: RwLock<String> = RwLock::new("Arka".to_owned());
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();

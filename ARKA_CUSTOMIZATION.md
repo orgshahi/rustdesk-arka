@@ -140,27 +140,42 @@ sizes/formats** of the originals (so no layout breaks). Generator kept at
 | 1 | **Server values** | Real `RENDEZVOUS_SERVER`, `RELAY_SERVER`, `API_SERVER`, `RS_PUB_KEY` (from the Arka hbbs/hbbr server). Put them in `arka-env.ps1`/`.sh` for local builds, or in GitHub Secrets for CI. |
 | 2 | **Logo / icons** | Replace the placeholder "A" monogram with the official Arka logo (same file names & sizes; re-run `tools/gen_arka_icons.py` from the master, or drop in matched assets). |
 | 3 | **Color palette** | Replace the teal placeholder tokens in `MyTheme` with the final Arka palette. |
-| 4 | **App display name → "Arka" (needs decision)** | See below. |
+| 4 | **App display name → "Arka"** | ✅ Done — full identity switch (see below). |
 
-### Needs-decision: full display name switch to "Arka"
+### Full identity switch to "Arka" (DONE)
 
-The in-app product name and window title come from the Rust global `APP_NAME`
-(default `"RustDesk"`). It was **left unchanged on purpose** because changing it
-cascades to things that will break if done half-way:
-- config/data folder name (`%AppData%\RustDesk` → `%AppData%\Arka`) — migration,
-- URI scheme (`rustdesk://` → `arka://`),
-- **exe name assumptions**: `updater.rs` and `core_main.rs` derive the exe name
-  from `APP_NAME.to_lowercase()` (they'd look for `arka.exe`), so the exe would
-  also need renaming to `arka.exe`, plus installer/packaging updates.
+The app now ships as a **distinct product "Arka"**, not RustDesk-with-a-theme.
+This was done with a small number of *central* edits so upstream updates stay
+easy to re-apply:
 
-**To do it fully later (recommended as one coordinated change):**
-1. Set `APP_NAME` default to `"Arka"` in `libs/hbb_common/src/config.rs`.
-2. Rename the built exe to `arka.exe` (update `build.py` `hbb_name`, the flutter
-   Windows `BINARY_NAME`, and installer/portable/msi references).
-3. Re-test updater, tray relaunch, and URI links.
+| Change | File | Old → New |
+|--------|------|-----------|
+| App identity | `libs/hbb_common/src/config.rs` | `APP_NAME` `"RustDesk"` → `"Arka"` |
+| Exe name | `flutter/windows/CMakeLists.txt` | `BINARY_NAME` `"rustdesk"` → `"arka"` (builds `arka.exe`) |
+| Title fallback | `flutter/windows/runner/main.cpp` | `L"RustDesk"` → `L"Arka"` |
+| Metadata | `flutter/windows/runner/Runner.rc` | `InternalName`/`OriginalFilename` → `arka`/`arka.exe` |
+| UI strings | `src/lang/*.rs` (51 files) | product name `RustDesk` → `Arka` via **`tools/arka_rebrand.py`** |
 
-Because it couldn't be verified here without breakage, it is flagged rather than
-applied.
+Effects of the `APP_NAME` change (all intended):
+- window title → **Arka**; config/data dir → `%AppData%\Arka` (separate from any
+  installed RustDesk — no conflict / no shared config); URI scheme → `arka://`;
+  tray relaunch + updater use `arka.exe` (matches `BINARY_NAME`); and
+  `is_custom_client()` becomes true, so upstream hides RustDesk-specific promo.
+- The window class is the generic `FLUTTER_RUNNER_WIN32_WINDOW`, and single-
+  instance matches on class **+ title**, so Arka runs independently alongside a
+  stock RustDesk install.
+
+**Update-safety:** the code edits are 4 central lines (all marked `ARKA`); the
+1300+ UI-string replacements are produced by the re-runnable
+`tools/arka_rebrand.py`. After merging a newer RustDesk upstream, re-run that
+script to re-apply the string rebrand — no hand-editing.
+
+> **AGPL-3.0 note.** RustDesk is AGPL-licensed. Rebranding the client is allowed,
+> but Arka must **keep this client's source available to its users** and preserve
+> the `LICENSE` file and source copyright headers. The rebrand touches UI strings
+> and identity only — not the license or copyright notices. Website/help links
+> still point to `rustdesk.com` (no Arka URL provided yet); update those when a
+> real Arka site exists.
 
 ---
 

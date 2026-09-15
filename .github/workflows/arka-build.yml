@@ -18,9 +18,8 @@ name: Arka Windows Build
 
 on:
   workflow_dispatch:
-  # Uncomment to also build on every push to the branch (uses CI minutes):
-  # push:
-  #   branches: [arka-custom]
+  push:
+    branches: [arka-custom]
 
 env:
   RUST_VERSION: "1.75"

@@ -1080,7 +1080,12 @@ fn get_api_server_(api: String, custom: String) -> String {
             return format!("http://{}", s);
         }
     }
-    "https://admin.rustdesk.com".to_owned()
+    // ARKA CUSTOMIZATION: API server injected at build time via API_SERVER.
+    // Falls back to the RustDesk default when not provided. See ARKA_CUSTOMIZATION.md.
+    match option_env!("API_SERVER") {
+        Some(s) if !s.is_empty() => s.to_owned(),
+        _ => "https://admin.rustdesk.com".to_owned(),
+    }
 }
 
 #[inline]
@@ -2080,7 +2085,34 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
     ThrottledInterval::new(i)
 }
 
+// ARKA CUSTOMIZATION: seed hardcoded server settings from compile-time env vars.
+// Values placed in OVERWRITE_SETTINGS are both applied AND locked: the user cannot
+// change them in the UI (see `Config::is_option_can_save`). Only non-empty
+// compile-time values are injected, so a build without these env vars behaves
+// exactly like stock RustDesk. This is the "zero-config, points at Arka" layer.
+// See ARKA_CUSTOMIZATION.md.
+fn seed_arka_builtin_config() {
+    let mut overwrite = config::OVERWRITE_SETTINGS.write().unwrap();
+    let mut set = |k: &str, v: Option<&'static str>| {
+        if let Some(v) = v {
+            if !v.is_empty() {
+                overwrite.insert(k.to_owned(), v.to_owned());
+            }
+        }
+    };
+    set(
+        keys::OPTION_CUSTOM_RENDEZVOUS_SERVER,
+        option_env!("RENDEZVOUS_SERVER"),
+    );
+    set(keys::OPTION_RELAY_SERVER, option_env!("RELAY_SERVER"));
+    set(keys::OPTION_API_SERVER, option_env!("API_SERVER"));
+    set(keys::OPTION_KEY, option_env!("RS_PUB_KEY"));
+}
+
 pub fn load_custom_client() {
+    // ARKA: always seed hardcoded server config first (runs on every startup path
+    // that loads the custom client, i.e. both the flutter and non-flutter paths).
+    seed_arka_builtin_config();
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());

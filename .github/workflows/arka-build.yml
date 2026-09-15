@@ -1,0 +1,146 @@
+# =====================================================================
+# ARKA — Windows x64 client build (self-hosted server, hardcoded config)
+# =====================================================================
+# Produces a Windows x64 Flutter build of the Arka-branded RustDesk client.
+# The four server values are injected at COMPILE TIME from GitHub Secrets:
+#     RENDEZVOUS_SERVER, RELAY_SERVER, API_SERVER, RS_PUB_KEY
+# If a secret is missing/empty, the code falls back to the placeholder in
+# libs/hbb_common/src/config.rs, so this pipeline still builds green before
+# the real values are configured. See ARKA_CUSTOMIZATION.md.
+#
+# This mirrors the upstream .github/workflows/flutter-build.yml Windows x64
+# Flutter job (same pinned Flutter/Rust/LLVM/vcpkg versions) and reuses the
+# repo's own bridge.yml to generate the flutter_rust_bridge files.
+#
+# Trigger: manual (Actions tab -> "Arka Windows Build" -> Run workflow).
+# =====================================================================
+name: Arka Windows Build
+
+on:
+  workflow_dispatch:
+  # Uncomment to also build on every push to the branch (uses CI minutes):
+  # push:
+  #   branches: [arka-custom]
+
+env:
+  RUST_VERSION: "1.75"
+  LLVM_VERSION: "15.0.6"
+  FLUTTER_VERSION: "3.24.5"
+  VCPKG_COMMIT_ID: "120deac3062162151622ca4860575a33844ba10b"
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+
+jobs:
+  # Reuse the repository's own bridge generation job (Flutter 3.22.3 default bridge).
+  generate-bridge:
+    uses: ./.github/workflows/bridge.yml
+
+  build-windows-x64:
+    name: Build Arka (windows x64)
+    needs: [generate-bridge]
+    runs-on: windows-2022
+    env:
+      # ---- ARKA server config injected at COMPILE TIME (option_env!) ----
+      RENDEZVOUS_SERVER: ${{ secrets.RENDEZVOUS_SERVER }}
+      RELAY_SERVER: ${{ secrets.RELAY_SERVER }}
+      API_SERVER: ${{ secrets.API_SERVER }}
+      RS_PUB_KEY: ${{ secrets.RS_PUB_KEY }}
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Checkout source code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          submodules: recursive
+
+      - name: Restore bridge files
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bridge-artifact
+          path: ./
+
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@ebc0426251bc40c7cd31162802432c68818ab8f0 # v2.0.9
+        with:
+          version: ${{ env.LLVM_VERSION }}
+
+      - name: Install flutter
+        id: flutter
+        uses: subosito/flutter-action@2783a3f08e1baf891508463f8c6653c258246225 # v2.12.0
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          architecture: x64
+
+      - name: Replace engine with rustdesk custom flutter engine
+        run: |
+          flutter doctor -v
+          flutter precache --windows
+          Invoke-WebRequest -Uri https://github.com/rustdesk/engine/releases/download/main/windows-x64-release.zip -OutFile windows-x64-release.zip
+          Expand-Archive -Path windows-x64-release.zip -DestinationPath windows-x64-release
+          mv -Force windows-x64-release/*  C:/hostedtoolcache/windows/flutter/stable-${{ env.FLUTTER_VERSION }}-x64/bin/cache/artifacts/engine/windows-x64-release/
+
+      - name: Patch flutter
+        shell: bash
+        run: |
+          cp .github/patches/flutter_3.24.4_dropdown_menu_enableFilter.diff $(dirname $(dirname $(which flutter)))
+          cd $(dirname $(dirname $(which flutter)))
+          [[ "3.24.5" == ${{ env.FLUTTER_VERSION }} ]] && git apply flutter_3.24.4_dropdown_menu_enableFilter.diff
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          targets: x86_64-pc-windows-msvc
+          components: "rustfmt"
+
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          prefix-key: windows-2022-arka
+
+      - name: Setup vcpkg with Github Actions binary cache
+        uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2 # v11
+        with:
+          vcpkgDirectory: C:\vcpkg
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+          doNotCache: false
+
+      - name: Install vcpkg dependencies
+        env:
+          VCPKG_DEFAULT_HOST_TRIPLET: x64-windows-static
+        shell: bash
+        run: |
+          if ! $VCPKG_ROOT/vcpkg \
+            install \
+            --triplet x64-windows-static \
+            --x-install-root="$VCPKG_ROOT/installed"; then
+            find "${VCPKG_ROOT}/" -name "*.log" | while read -r _1; do
+              echo "$_1:"; echo "======"; cat "$_1"; echo "======"; echo ""
+            done
+            exit 1
+          fi
+
+      - name: Show injected Arka server config (values are masked if secret)
+        shell: bash
+        run: |
+          echo "RENDEZVOUS_SERVER set: ${RENDEZVOUS_SERVER:+yes}"
+          echo "RELAY_SERVER set:      ${RELAY_SERVER:+yes}"
+          echo "API_SERVER set:        ${API_SERVER:+yes}"
+          echo "RS_PUB_KEY set:        ${RS_PUB_KEY:+yes}"
+
+      - name: Build Arka client
+        # option_env! reads RENDEZVOUS_SERVER/RELAY_SERVER/API_SERVER/RS_PUB_KEY
+        # from this job's env at compile time.
+        run: |
+          python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec
+          mv ./flutter/build/windows/x64/runner/Release ./arka
+
+      - name: Upload Arka Windows build
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: arka-windows-x64
+          path: arka

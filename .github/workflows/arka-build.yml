@@ -17,9 +17,12 @@
 name: Arka Windows Build
 
 on:
+  # Manual only. Auto-build on push was used once to get GitHub to register this
+  # workflow (a dispatch-only workflow on a brand-new repo is not dispatchable
+  # until it has been indexed); it is off again so ordinary pushes do not spend
+  # ~50 min of CI. Run it from Actions -> "Arka Windows Build" -> Run workflow,
+  # or: gh workflow run arka-build.yml --ref arka-custom
   workflow_dispatch:
-  push:
-    branches: [arka-custom]
 
 env:
   RUST_VERSION: "1.75"

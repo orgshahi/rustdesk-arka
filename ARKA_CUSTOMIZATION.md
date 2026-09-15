@@ -95,25 +95,51 @@ name were touched** (those break the build / updater / auto-update).
 | ProductName | `RustDesk` | `Arka` |
 | InternalName / OriginalFilename | `rustdesk` / `rustdesk.exe` | **unchanged** (technical — used by `get_license_from_exe_name`) |
 
-### Theme / colors (modern placeholder palette)
+### Design system — dark, mint-accented
 **File:** `flutter/lib/common.dart` — `class MyTheme` (single source of truth)
 
-Modern professional **teal** palette (aligned with Arka's navy/teal identity),
-replacing RustDesk's blue. To apply the final Arka palette later, edit **only**
-this token block:
+Dark-first design system. **To apply the final Arka brand colour, change the one
+`accent` line** — everything else derives from the tokens.
 
-| Token | Original | New (placeholder) |
-|-------|----------|-------------------|
-| `accent` | `0xFF0071FF` | `0xFF0D9488` (teal-600) |
-| `accent50` | `0x770071FF` | `0x770D9488` |
-| `accent80` | `0xAA0071FF` | `0xAA0D9488` |
-| `button` | `0xFF2C8CFF` | `0xFF14B8A6` (teal-500) |
-| `idColor` | `0xFF00B6F0` | `0xFF0F766E` (teal-700) |
-| `cmIdColor` | `0xFF21790B` | `0xFF0F766E` |
-| `grayBg` | `0xFFEFEFF2` | `0xFFF4F5F7` |
-| `border` | `0xFFCCCCCC` | `0xFFD9DCE1` |
-| `canvasColor` | `0xFF212121` | `0xFF1C1D22` |
-| `ColorScheme.light/dark primary` | `Colors.blue` | `accent` |
+| Token | Value | Role |
+|-------|-------|------|
+| `arkaBg` | `#0C1311` | app background |
+| `arkaSurface` | `#141D1A` | panels & cards (one step up) |
+| `arkaBorder` | `rgba(255,255,255,.07)` | hairline separation |
+| `arkaText` | `#E8EDEB` | primary text |
+| `arkaTextDim` | `#8A9490` | secondary text |
+| **`accent`** | **`#34E0A1`** | **the single accent — primary action, active item, key icons** |
+| `accent50` / `accent80` | 47% / 67% of accent | derived |
+| `button` / `idColor` / `cmIdColor` | `= accent` | derived |
+| `radiusCard` | `16` | cards & panels |
+| `radiusControl` | `12` | buttons & inputs |
+| `radiusPill` | `999` | chips & badges |
+
+Wired through the dark `ThemeData`: scaffold/dialog/card surfaces, filled
+rounded-12 inputs with a hairline border and an accent focus ring, flat
+(`elevation: 0`) accent buttons with **dark ink** (white on mint fails
+contrast), and `colorScheme` primary/secondary/surface/onPrimary.
+
+Surfaces are separated by **luminance + hairline**, never a heavy rule.
+
+**Dark-first:** `MyTheme.getThemeModePreference()` returns `ThemeMode.dark` when
+no preference is stored (fresh config). An explicit light/dark/system choice made
+in Settings is still honoured.
+
+### Layout changes (Flutter desktop)
+
+| Area | File | Change |
+|------|------|--------|
+| Left pane | `desktop/pages/desktop_home_page.dart` | Arka logo + wordmark header with divider (replaced bare centered logo + "Powered by"); pane 200 → 240 px |
+| ID / One-time password | same | thin 2 px accent bars → rounded surface **cards** (radius 16, hairline border, small tracked labels, heavier values) |
+| Connect panel | `desktop/pages/connection_page.dart` | flat outline → elevated **card** (radius 16, hairline border, **soft green halo** behind this primary element); Connect button 28 → 36 px |
+| Peer rows | `common/widgets/peer_card.dart` | list rows radius 5 → 12 (card-like); hover: hard 2 px accent border → accent wash (6%) + low-opacity edge (45%) |
+
+**Still open (not implemented):** the narrow icon **navigation sidebar** and the
+optional **third/details column**. The current shell is "identity pane + main
+column" with navigation in the top tab bar. This is a genuine structural rebuild
+and is best done with a local Flutter toolchain (live hot reload) rather than
+blind edits validated by ~50-minute CI builds.
 
 ### Logo & icons (temporary placeholders)
 A modern rounded-square **teal "A" monogram** was generated at the **exact
@@ -139,7 +165,7 @@ sizes/formats** of the originals (so no layout breaks). Generator kept at
 |---|------|---------------|
 | 1 | **Server values** | Real `RENDEZVOUS_SERVER`, `RELAY_SERVER`, `API_SERVER`, `RS_PUB_KEY` (from the Arka hbbs/hbbr server). Put them in `arka-env.ps1`/`.sh` for local builds, or in GitHub Secrets for CI. |
 | 2 | **Logo / icons** | Replace the placeholder "A" monogram with the official Arka logo (same file names & sizes; re-run `tools/gen_arka_icons.py` from the master, or drop in matched assets). |
-| 3 | **Color palette** | Replace the teal placeholder tokens in `MyTheme` with the final Arka palette. |
+| 3 | **Brand accent** | The design system is final in structure; only the brand colour is provisional. Change the single `accent` token in `MyTheme` (`#34E0A1`) to the official Arka colour — the derived tokens follow automatically. |
 | 4 | **App display name → "Arka"** | ✅ Done — full identity switch (see below). |
 
 ### Full identity switch to "Arka" (DONE)

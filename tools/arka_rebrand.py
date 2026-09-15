@@ -30,6 +30,10 @@ REPO = os.environ.get("ARKA_REPO", REPO)
 
 def main():
     lang_files = sorted(glob.glob(os.path.join(REPO, "src", "lang", "*.rs")))
+    # AGENTS.md: never edit template.rs (the master key list). The UI text comes
+    # from en.rs + the per-language files, so skipping template.rs does not affect
+    # the visible rebrand.
+    lang_files = [p for p in lang_files if os.path.basename(p) != "template.rs"]
     if not lang_files:
         print("No lang files found under src/lang/*.rs", file=sys.stderr)
         return 1

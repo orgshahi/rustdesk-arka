@@ -48,7 +48,7 @@ class _PeerCardState extends State<_PeerCard>
     with AutomaticKeepAliveClientMixin {
   var _menuPos = RelativeRect.fill;
   final double _cardRadius = 16;
-  final double _tileRadius = 5;
+  final double _tileRadius = 12; // ARKA: card-like rounded rows
   final double _borderWidth = 2;
 
   @override
@@ -103,9 +103,11 @@ class _PeerCardState extends State<_PeerCard>
     );
     return MouseRegion(
       onEnter: (evt) {
+        // ARKA: soft hover — subtle accent wash + low-opacity edge.
         deco.value = BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.06),
           border: Border.all(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.45),
               width: _borderWidth),
           borderRadius: BorderRadius.circular(
             peerCardUiType.value == PeerUiType.grid ? _cardRadius : _tileRadius,

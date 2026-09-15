@@ -250,18 +250,25 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
 class MyTheme {
   MyTheme._();
 
-  static const Color grayBg = Color(0xFFEFEFF2);
-  static const Color accent = Color(0xFF0071FF);
-  static const Color accent50 = Color(0x770071FF);
-  static const Color accent80 = Color(0xAA0071FF);
-  static const Color canvasColor = Color(0xFF212121);
-  static const Color border = Color(0xFFCCCCCC);
-  static const Color idColor = Color(0xFF00B6F0);
+  // ======================================================================
+  // ARKA BRAND PALETTE  (SINGLE SOURCE OF TRUTH — swap these for the final
+  // official Arka palette when it arrives; nothing else needs to change.)
+  // Temporary placeholder: a modern, professional teal aligned with Arka's
+  // navy/teal identity. Original RustDesk accent was Color(0xFF0071FF).
+  // See ARKA_CUSTOMIZATION.md.
+  static const Color grayBg = Color(0xFFF4F5F7);
+  static const Color accent = Color(0xFF0D9488); // teal-600 — primary brand
+  static const Color accent50 = Color(0x770D9488);
+  static const Color accent80 = Color(0xAA0D9488);
+  static const Color canvasColor = Color(0xFF1C1D22);
+  static const Color border = Color(0xFFD9DCE1);
+  static const Color idColor = Color(0xFF0F766E); // teal-700 — ID emphasis
   static const Color darkGray = Color.fromARGB(255, 148, 148, 148);
-  static const Color cmIdColor = Color(0xFF21790B);
+  static const Color cmIdColor = Color(0xFF0F766E);
   static const Color dark = Colors.black87;
-  static const Color button = Color(0xFF2C8CFF);
-  static const Color hoverBorder = Color(0xFF999999);
+  static const Color button = Color(0xFF14B8A6); // teal-500 — buttons/hover
+  static const Color hoverBorder = Color(0xFF9AA0A6);
+  // ======================================================================
 
   // ListTile
   static const ListTileThemeData listTileTheme = ListTileThemeData(
@@ -454,7 +461,7 @@ class MyTheme {
         style:
             MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.white))),
     colorScheme: ColorScheme.light(
-        primary: Colors.blue, secondary: accent, background: grayBg),
+        primary: accent, secondary: accent, background: grayBg), // ARKA: teal primary
     popupMenuTheme: PopupMenuThemeData(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -562,7 +569,7 @@ class MyTheme {
         style: MenuStyle(
             backgroundColor: MaterialStatePropertyAll(Color(0xFF121212)))),
     colorScheme: ColorScheme.dark(
-      primary: Colors.blue,
+      primary: accent, // ARKA: teal primary
       secondary: accent,
       background: Color(0xFF24252B),
     ),

@@ -211,8 +211,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       padding: const EdgeInsets.fromLTRB(14, 8, 8, 10),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: MyTheme.accent.withOpacity(0.20), width: 1),
+        borderRadius: BorderRadius.circular(MyTheme.radiusCard),
+        border: Border.all(color: MyTheme.arkaBorder, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,8 +309,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: MyTheme.accent.withOpacity(0.20), width: 1),
+        borderRadius: BorderRadius.circular(MyTheme.radiusCard),
+        border: Border.all(color: MyTheme.arkaBorder, width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

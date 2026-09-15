@@ -347,14 +347,20 @@ class _ConnectionPageState extends State<ConnectionPage>
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 22),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.all(Radius.circular(18)),
-        border: Border.all(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.18)),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        // ARKA: hairline separation by luminance, not a hard line.
+        border: Border.all(color: Colors.white.withOpacity(0.07)),
         boxShadow: [
+          // soft green halo behind the primary element
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.10),
+            blurRadius: 44,
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.28),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),

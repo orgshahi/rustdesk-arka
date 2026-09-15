@@ -256,17 +256,29 @@ class MyTheme {
   // Temporary placeholder: a modern, professional teal aligned with Arka's
   // navy/teal identity. Original RustDesk accent was Color(0xFF0071FF).
   // See ARKA_CUSTOMIZATION.md.
+  // --- surfaces (dark-first) ---
+  static const Color arkaBg = Color(0xFF0C1311); // app background
+  static const Color arkaSurface = Color(0xFF141D1A); // panels & cards (+1 step)
+  static const Color arkaBorder = Color(0x12FFFFFF); // rgba(255,255,255,.07)
+  static const Color arkaText = Color(0xFFE8EDEB); // primary text
+  static const Color arkaTextDim = Color(0xFF8A9490); // secondary text
+  // --- single accent token (swap this one line for the final Arka color) ---
+  static const Color accent = Color(0xFF34E0A1); // mint — primary action only
+  static const Color accent50 = Color(0x7734E0A1);
+  static const Color accent80 = Color(0xAA34E0A1);
+  static const Color button = accent;
+  static const Color idColor = accent;
+  static const Color cmIdColor = accent;
+  // --- radii ---
+  static const double radiusCard = 16.0; // cards & panels
+  static const double radiusControl = 12.0; // buttons & inputs
+  static const double radiusPill = 999.0; // chips & badges
+  // --- misc / light fallbacks ---
   static const Color grayBg = Color(0xFFF4F5F7);
-  static const Color accent = Color(0xFF0D9488); // teal-600 — primary brand
-  static const Color accent50 = Color(0x770D9488);
-  static const Color accent80 = Color(0xAA0D9488);
-  static const Color canvasColor = Color(0xFF1C1D22);
-  static const Color border = Color(0xFFD9DCE1);
-  static const Color idColor = Color(0xFF0F766E); // teal-700 — ID emphasis
+  static const Color canvasColor = arkaBg;
+  static const Color border = arkaBorder;
   static const Color darkGray = Color.fromARGB(255, 148, 148, 148);
-  static const Color cmIdColor = Color(0xFF0F766E);
   static const Color dark = Colors.black87;
-  static const Color button = Color(0xFF14B8A6); // teal-500 — buttons/hover
   static const Color hoverBorder = Color(0xFF9AA0A6);
   // ======================================================================
 
@@ -480,30 +492,41 @@ class MyTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: false,
     brightness: Brightness.dark,
-    hoverColor: Color.fromARGB(255, 45, 46, 53),
-    scaffoldBackgroundColor: Color(0xFF18191E),
-    dialogBackgroundColor: Color(0xFF18191E),
+    // ARKA: dark-first surfaces — bg #0C1311, panels/cards #141D1A one step up.
+    hoverColor: Color(0xFF1B2623),
+    scaffoldBackgroundColor: arkaBg,
+    dialogBackgroundColor: arkaSurface,
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
     dialogTheme: DialogTheme(
       elevation: 15,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18.0),
+        borderRadius: BorderRadius.circular(radiusCard),
         side: BorderSide(
           width: 1,
-          color: Color(0xFF24252B),
+          color: arkaBorder,
         ),
       ),
     ),
     scrollbarTheme: scrollbarThemeDark,
     inputDecorationTheme: (isDesktop || isWebDesktop)
         ? InputDecorationTheme(
-            fillColor: Color(0xFF24252B),
+            // ARKA: rounded 12 inputs on the panel surface, hairline border.
+            fillColor: arkaSurface,
             filled: true,
             isDense: true,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(radiusControl),
+              borderSide: BorderSide(color: arkaBorder, width: 1),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(radiusControl),
+              borderSide: BorderSide(color: arkaBorder, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(radiusControl),
+              borderSide: BorderSide(color: accent, width: 1.4),
             ),
           )
         : null,
@@ -518,7 +541,7 @@ class MyTheme {
         color: accent80,
       ),
     ),
-    cardColor: Color(0xFF24252B),
+    cardColor: arkaSurface, // ARKA: panels/cards one step above the bg
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
       labelColor: Colors.white70,
@@ -542,22 +565,24 @@ class MyTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: MyTheme.accent,
-        foregroundColor: Colors.white,
+        // ARKA: dark ink on the mint accent (white would fail contrast).
+        foregroundColor: MyTheme.arkaBg,
         disabledForegroundColor: Colors.white70,
         disabledBackgroundColor: Colors.white10,
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(radiusControl),
         ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: Color(0xFF24252B),
-        side: BorderSide(color: Colors.white12, width: 0.5),
+        backgroundColor: arkaSurface,
+        side: BorderSide(color: arkaBorder, width: 1),
         disabledForegroundColor: Colors.white70,
-        foregroundColor: Colors.white70,
+        foregroundColor: arkaText,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(radiusControl),
         ),
       ),
     ),
@@ -569,9 +594,13 @@ class MyTheme {
         style: MenuStyle(
             backgroundColor: MaterialStatePropertyAll(Color(0xFF121212)))),
     colorScheme: ColorScheme.dark(
-      primary: accent, // ARKA: teal primary
+      primary: accent, // ARKA: single mint accent token
       secondary: accent,
-      background: Color(0xFF24252B),
+      background: arkaSurface,
+      surface: arkaSurface,
+      onBackground: arkaText,
+      onSurface: arkaText,
+      onPrimary: arkaBg,
     ),
     popupMenuTheme: PopupMenuThemeData(
         shape: RoundedRectangleBorder(
@@ -586,7 +615,11 @@ class MyTheme {
   );
 
   static ThemeMode getThemeModePreference() {
-    return themeModeFromString(bind.mainGetLocalOption(key: kCommConfKeyTheme));
+    // ARKA: dark-first. An unset preference (fresh config) defaults to dark;
+    // an explicit light/dark/system choice from Settings is still honoured.
+    final v = bind.mainGetLocalOption(key: kCommConfKeyTheme);
+    if (v.isEmpty) return ThemeMode.dark;
+    return themeModeFromString(v);
   }
 
   static Future<void> changeDarkMode(ThemeMode mode) async {

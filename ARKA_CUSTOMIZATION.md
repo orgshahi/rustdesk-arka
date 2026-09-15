@@ -17,7 +17,7 @@ self-hosted server with **zero end-user configuration**.
 |------|-------|
 | Upstream repo | https://github.com/rustdesk/rustdesk |
 | Base tag (stable) | **1.4.9** |
-| Submodule `libs/hbb_common` | pinned at `7e1c392c62d39c364127307cd408421dd5f8cfb0` (matches tag 1.4.9) |
+| `libs/hbb_common` | based on `7e1c392c…` (tag 1.4.9), now **embedded** as regular files (de-submodule) so the fork is self-contained and CI builds anywhere it is pushed |
 | Work branch | `arka-custom` |
 
 All Arka changes are marked in code with an `ARKA` comment so they are easy to

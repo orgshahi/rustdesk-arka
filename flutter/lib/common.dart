@@ -394,8 +394,10 @@ class MyTheme {
     // https://stackoverflow.com/questions/77537315/after-upgrading-to-flutter-3-16-the-app-bar-background-color-button-size-and
     useMaterial3: false,
     brightness: Brightness.light,
-    hoverColor: Color.fromARGB(255, 224, 224, 224),
-    scaffoldBackgroundColor: Colors.white,
+    // ARKA: soft off-white ground (pure white glares); cards are white and sit
+    // ABOVE the ground for clear surface separation.
+    hoverColor: const Color(0xFFEDEFF0),
+    scaffoldBackgroundColor: const Color(0xFFF2F4F5),
     dialogBackgroundColor: Colors.white,
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
@@ -427,9 +429,9 @@ class MyTheme {
         bodySmall: TextStyle(fontSize: 12, color: Colors.black87, height: 1.25),
         bodyMedium:
             TextStyle(fontSize: 14, color: Colors.black87, height: 1.25),
-        labelLarge: TextStyle(fontSize: 16.0, color: MyTheme.accent80)),
-    cardColor: grayBg,
-    hintColor: Color(0xFFAAAAAA),
+        labelLarge: TextStyle(fontSize: 16.0, color: Colors.black87)),
+    cardColor: Colors.white, // ARKA: white cards on the soft-grey ground
+    hintColor: Color(0xFF9AA0A6),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
       labelColor: Colors.black87,
@@ -451,14 +453,17 @@ class MyTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: MyTheme.accent,
+        // ARKA: dark ink on the mint accent for contrast (light theme).
+        foregroundColor: MyTheme.arkaBg,
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(MyTheme.radiusControl),
         ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: grayBg,
+        backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),

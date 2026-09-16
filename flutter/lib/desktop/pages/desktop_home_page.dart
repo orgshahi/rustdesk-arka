@@ -221,7 +221,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(MyTheme.radiusCard),
-        border: Border.all(color: MyTheme.arkaBorder, width: 1),
+        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? MyTheme.arkaBorder : const Color(0x14000000), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +319,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(MyTheme.radiusCard),
-        border: Border.all(color: MyTheme.arkaBorder, width: 1),
+        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? MyTheme.arkaBorder : const Color(0x14000000), width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

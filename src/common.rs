@@ -2117,6 +2117,13 @@ fn seed_arka_builtin_config() {
     if let Some(api) = option_env!("API_SERVER") {
         set(keys::OPTION_API_SERVER, api);
     }
+    // Hide the whole "ID/Relay Server" settings entry so the locked values are
+    // not even editable in the UI (OVERWRITE_SETTINGS alone would let the user
+    // type into the field but silently discard it on save — misleading).
+    config::BUILTIN_SETTINGS
+        .write()
+        .unwrap()
+        .insert(keys::OPTION_HIDE_SERVER_SETTINGS.to_owned(), "Y".to_owned());
 }
 
 pub fn load_custom_client() {

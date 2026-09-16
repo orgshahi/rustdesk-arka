@@ -349,7 +349,7 @@ class _ConnectionPageState extends State<ConnectionPage>
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.all(Radius.circular(16)),
         // ARKA: hairline separation by luminance, not a hard line.
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.07) : const Color(0x14000000)),
         boxShadow: [
           // soft green halo behind the primary element
           BoxShadow(

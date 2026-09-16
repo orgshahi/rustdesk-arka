@@ -89,13 +89,22 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           children: [
             loadIcon(30),
             const SizedBox(width: 10),
-            Text(
-              'Arka',
-              style: TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.4,
-                color: Theme.of(context).textTheme.titleLarge?.color,
+            // ARKA: two-tone ArkaDesk wordmark (Arka light + Desk mint).
+            Text.rich(
+              TextSpan(
+                style: const TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.4,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Arka',
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.titleLarge?.color),
+                  ),
+                  const TextSpan(text: 'Desk', style: TextStyle(color: MyTheme.accent)),
+                ],
               ),
             ),
           ],
@@ -453,7 +462,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       final isToUpdate = (isWindows || isMacOS) && bind.mainIsInstalled();
       String btnText = isToUpdate ? 'Update' : 'Download';
       GestureTapCallback onPressed = () async {
-        final Uri url = Uri.parse('https://rustdesk.com/download');
+        final Uri url = Uri.parse('https://arka.ir');
         await launchUrl(url);
       };
       if (isToUpdate) {

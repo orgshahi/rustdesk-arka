@@ -50,23 +50,37 @@ def load_font(px):
     return ImageFont.load_default()
 
 
+TEAL = (52, 224, 161, 255)   # #34E0A1  brand mint
+DARK = (12, 19, 17, 255)     # #0C1311  brand background tile
+INK = (232, 237, 235, 255)   # #E8EDEB  light "A"
+
+
+def _stroke(draw, pts, color, w):
+    """Thick polyline with round joins/caps (Pillow squares caps, so add discs)."""
+    r = w / 2
+    draw.line(pts, fill=color, width=int(w), joint="curve")
+    for (x, y) in pts:
+        draw.ellipse([x - r, y - r, x + r, y + r], fill=color)
+
+
 def make_master():
     S = MASTER * SS
     canvas = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    # rounded dark app tile (ArkaDesk primary logo is on dark; reads well small)
     radius = int(S * 0.22)
-    tile = vgradient(S, TEAL_TOP, TEAL_BOT)
-    mask = rounded_mask(S, radius)
-    canvas.paste(tile, (0, 0), mask)
+    tile = Image.new("RGBA", (S, S), DARK)
+    canvas.paste(tile, (0, 0), rounded_mask(S, radius))
 
-    # White "A" monogram, optically centered
     draw = ImageDraw.Draw(canvas)
-    font = load_font(int(S * 0.62))
-    txt = "A"
-    bbox = draw.textbbox((0, 0), txt, font=font)
-    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    x = (S - tw) / 2 - bbox[0]
-    y = (S - th) / 2 - bbox[1] - int(S * 0.02)
-    draw.text((x, y), txt, font=font, fill=WHITE)
+    u = S / 100.0           # user units -> pixels
+    w = 9 * u               # stroke width matches the SVG mark
+    # left chevron  <
+    _stroke(draw, [(35 * u, 29 * u), (21 * u, 50 * u), (35 * u, 71 * u)], TEAL, w)
+    # right chevron >
+    _stroke(draw, [(65 * u, 29 * u), (79 * u, 50 * u), (65 * u, 71 * u)], TEAL, w)
+    # "A"
+    _stroke(draw, [(41 * u, 72 * u), (50 * u, 29 * u), (59 * u, 72 * u)], INK, w)
+    _stroke(draw, [(44.5 * u, 57 * u), (55.5 * u, 57 * u)], INK, w)
 
     return canvas.resize((MASTER, MASTER), Image.LANCZOS)
 

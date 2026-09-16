@@ -131,7 +131,7 @@ const CHARS: &[char] = &[
 //
 // Empty-safe picker: in CI an unset secret becomes an *empty* env var
 // (option_env! -> Some("")), which must fall back to the default, not "".
-const fn arka_env_or(env: Option<&'static str>, default: &'static str) -> &'static str {
+pub const fn arka_env_or(env: Option<&'static str>, default: &'static str) -> &'static str {
     match env {
         Some(x) => {
             if x.is_empty() {
@@ -143,19 +143,18 @@ const fn arka_env_or(env: Option<&'static str>, default: &'static str) -> &'stat
         None => default,
     }
 }
-pub const RENDEZVOUS_SERVERS: &[&str] = &[arka_env_or(
-    option_env!("RENDEZVOUS_SERVER"),
-    // ARKA PLACEHOLDER — replace with the real Arka ID server, or inject
-    // RENDEZVOUS_SERVER at build time. This placeholder host simply fails to
-    // connect (no crash) so the UI can still be tested.
-    "id.arka.example",
-)];
-pub const RS_PUB_KEY: &str = arka_env_or(
-    option_env!("RS_PUB_KEY"),
-    // ARKA PLACEHOLDER — empty means "no server-key verification". Inject the
-    // real hbbs public key (from id_ed25519.pub) at build time for production.
-    "",
-);
+
+// ARKA PRODUCTION SERVER — hardcoded so the client just works on download, with
+// no configuration. These are also FORCED and LOCKED in the UI via
+// seed_arka_builtin_config() (OVERWRITE_SETTINGS). Build-time env vars
+// (RENDEZVOUS_SERVER / RELAY_SERVER / RS_PUB_KEY) still override if provided.
+pub const ARKA_RENDEZVOUS_DEFAULT: &str = "desk.arka.ir";
+pub const ARKA_RELAY_DEFAULT: &str = "desk.arka.ir";
+pub const ARKA_KEY_DEFAULT: &str = "tl7Vqj90CaTeSOhGt8WwBZiHxGpoIhb7juZz66UHDVM";
+
+pub const RENDEZVOUS_SERVERS: &[&str] =
+    &[arka_env_or(option_env!("RENDEZVOUS_SERVER"), ARKA_RENDEZVOUS_DEFAULT)];
+pub const RS_PUB_KEY: &str = arka_env_or(option_env!("RS_PUB_KEY"), ARKA_KEY_DEFAULT);
 
 pub const RENDEZVOUS_PORT: i32 = 21116;
 pub const RELAY_PORT: i32 = 21117;

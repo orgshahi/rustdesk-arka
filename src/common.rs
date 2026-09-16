@@ -2092,21 +2092,31 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
 // exactly like stock RustDesk. This is the "zero-config, points at Arka" layer.
 // See ARKA_CUSTOMIZATION.md.
 fn seed_arka_builtin_config() {
+    use hbb_common::config::{arka_env_or, ARKA_KEY_DEFAULT, ARKA_RELAY_DEFAULT,
+        ARKA_RENDEZVOUS_DEFAULT};
     let mut overwrite = config::OVERWRITE_SETTINGS.write().unwrap();
-    let mut set = |k: &str, v: Option<&'static str>| {
-        if let Some(v) = v {
-            if !v.is_empty() {
-                overwrite.insert(k.to_owned(), v.to_owned());
-            }
+    let mut set = |k: &str, v: &str| {
+        if !v.is_empty() {
+            overwrite.insert(k.to_owned(), v.to_owned());
         }
     };
+    // Always seed the real Arka values (env override optional). Being in
+    // OVERWRITE_SETTINGS both applies AND locks them — the user cannot change
+    // the server/relay/key in the UI.
     set(
         keys::OPTION_CUSTOM_RENDEZVOUS_SERVER,
-        option_env!("RENDEZVOUS_SERVER"),
+        arka_env_or(option_env!("RENDEZVOUS_SERVER"), ARKA_RENDEZVOUS_DEFAULT),
     );
-    set(keys::OPTION_RELAY_SERVER, option_env!("RELAY_SERVER"));
-    set(keys::OPTION_API_SERVER, option_env!("API_SERVER"));
-    set(keys::OPTION_KEY, option_env!("RS_PUB_KEY"));
+    set(
+        keys::OPTION_RELAY_SERVER,
+        arka_env_or(option_env!("RELAY_SERVER"), ARKA_RELAY_DEFAULT),
+    );
+    set(keys::OPTION_KEY, arka_env_or(option_env!("RS_PUB_KEY"), ARKA_KEY_DEFAULT));
+    // API server: optional. Only forced if injected at build time; otherwise it
+    // derives from the rendezvous host (http://desk.arka.ir:21114).
+    if let Some(api) = option_env!("API_SERVER") {
+        set(keys::OPTION_API_SERVER, api);
+    }
 }
 
 pub fn load_custom_client() {

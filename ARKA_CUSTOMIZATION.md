@@ -159,14 +159,20 @@ sizes/formats** of the originals (so no layout breaks). Generator kept at
 
 ---
 
-## 4. Placeholders to finish later
+## 4. Production status
 
-| # | Item | What's needed |
-|---|------|---------------|
-| 1 | **Server values** | Real `RENDEZVOUS_SERVER`, `RELAY_SERVER`, `API_SERVER`, `RS_PUB_KEY` (from the Arka hbbs/hbbr server). Put them in `arka-env.ps1`/`.sh` for local builds, or in GitHub Secrets for CI. |
-| 2 | **Logo / icons** | Replace the placeholder "A" monogram with the official Arka logo (same file names & sizes; re-run `tools/gen_arka_icons.py` from the master, or drop in matched assets). |
-| 3 | **Brand accent** | The design system is final in structure; only the brand colour is provisional. Change the single `accent` token in `MyTheme` (`#34E0A1`) to the official Arka colour — the derived tokens follow automatically. |
+| # | Item | Status |
+|---|------|--------|
+| 1 | **Server values** | ✅ **Hardcoded + locked.** Rendezvous/Relay `desk.arka.ir`, key `tl7Vqj9…` in `libs/hbb_common/src/config.rs` (`ARKA_*_DEFAULT`), forced into `OVERWRITE_SETTINGS` so users cannot change them. API derives to `http://desk.arka.ir:21114`. Build-time env still overrides. Verified baked into `librustdesk.dll`. |
+| 2 | **Logo / icons** | ✅ **ArkaDesk `<A>` mark** (teal chevrons + light A). Transparent SVG in-app (`flutter/assets/icon.svg`, `res/logo.svg`); dark rounded tile for app icons (ico/png, exact sizes) via `tools/gen_arka_icons.py`. |
+| 3 | **Brand accent** | ✅ Mint `#34E0A1` (single `accent` token). Change that one line for a different brand colour. |
 | 4 | **App display name → "Arka"** | ✅ Done — full identity switch (see below). |
+| 5 | **Website / contact** | ✅ Links → `arka.ir`; About page shows company, bilingual description, and contact (arka.ir · 021-91300476 · info@arka.ir). |
+
+**Build:** Windows **x64** only (Flutter desktop has no 32-bit; 32-bit Windows is
+effectively extinct). Windows ARM64 is possible via the upstream matrix but not
+needed. The production client is a portable folder — ship the whole
+`arka-windows-x64` folder (arka.exe + DLLs + `data`); users just run `arka.exe`.
 
 ### Full identity switch to "Arka" (DONE)
 

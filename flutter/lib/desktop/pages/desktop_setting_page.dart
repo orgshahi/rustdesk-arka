@@ -2427,6 +2427,19 @@ class _AboutState extends State<_About> {
       final fingerprint = data['fingerprint'].toString();
       const linkStyle = TextStyle(decoration: TextDecoration.underline);
       final scrollController = ScrollController();
+      // ARKA: a small contact row (icon + tappable text) for the About card.
+      Widget arkaContact(IconData icon, String text, VoidCallback onTap) =>
+          InkWell(
+            onTap: onTap,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 16, color: MyTheme.accent),
+                const SizedBox(width: 8),
+                Text(text),
+              ],
+            ).marginSymmetric(vertical: 4.0),
+          );
       return SingleChildScrollView(
         controller: scrollController,
         child: _Card(title: translate('About Arka'), children: [
@@ -2462,6 +2475,38 @@ class _AboutState extends State<_About> {
                     translate('Website'),
                     style: linkStyle,
                   ).marginSymmetric(vertical: 4.0)),
+              // ARKA: company identity + description + contact.
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 12),
+              Text(
+                'Rayan Samaneh Arka',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).textTheme.titleLarge?.color),
+              ),
+              Text(
+                translate('arka_tagline'),
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: MyTheme.accent),
+              ).marginOnly(top: 3, bottom: 10),
+              SelectionArea(
+                child: Text(
+                  translate('arka_about_desc'),
+                  style: const TextStyle(height: 1.5),
+                ),
+              ),
+              const SizedBox(height: 12),
+              arkaContact(Icons.language_outlined, 'arka.ir',
+                  () => launchUrlString('https://arka.ir')),
+              arkaContact(Icons.phone_outlined, '021-91300476',
+                  () => launchUrlString('tel:02191300476')),
+              arkaContact(Icons.email_outlined, 'info@arka.ir',
+                  () => launchUrlString('mailto:info@arka.ir')),
+              const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
                   color: MyTheme.accent,

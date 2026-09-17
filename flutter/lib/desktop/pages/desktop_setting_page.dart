@@ -2523,13 +2523,13 @@ class _AboutState extends State<_About> {
                         children: [
                           Text(
                             'Copyright © ${DateTime.now().toString().substring(0, 4)} Rayan Samaneh Arka.\n$license',
-                            style: const TextStyle(color: MyTheme.arkaBg),
+                            style: const TextStyle(color: MyTheme.onAccent),
                           ),
                           Text(
                             translate('Slogan_tip'),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w800,
-                                color: MyTheme.arkaBg),
+                                color: MyTheme.onAccent),
                           )
                         ],
                       ),

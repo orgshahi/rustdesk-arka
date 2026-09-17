@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <!-- ArkaDesk mark: teal chevrons around a light "A". No frame. -->
-  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="9">
-    <path d="M35 29 L21 50 L35 71" stroke="#34E0A1"/>
-    <path d="M65 29 L79 50 L65 71" stroke="#34E0A1"/>
-    <path d="M41 72 L50 29 L59 72" stroke="#E8EDEB"/>
-    <path d="M44.5 57 L55.5 57" stroke="#E8EDEB"/>
+  <!-- ArkaDesk mark: a clean minimal "A" (peak + crossbar). -->
+  <g fill="none" stroke="#E24A4A" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27 79 L50 21 L73 79"/>
+    <path d="M37.5 56 L62.5 56"/>
   </g>
 </svg>

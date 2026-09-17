@@ -50,9 +50,8 @@ def load_font(px):
     return ImageFont.load_default()
 
 
-TEAL = (52, 224, 161, 255)   # #34E0A1  brand mint
-DARK = (12, 19, 17, 255)     # #0C1311  brand background tile
-INK = (232, 237, 235, 255)   # #E8EDEB  light "A"
+RED = (226, 74, 74, 255)     # #E24A4A  soft brand red
+TILE = (29, 29, 32, 255)     # #1D1D20  dark app tile
 
 
 def _stroke(draw, pts, color, w):
@@ -66,21 +65,17 @@ def _stroke(draw, pts, color, w):
 def make_master():
     S = MASTER * SS
     canvas = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    # rounded dark app tile (ArkaDesk primary logo is on dark; reads well small)
+    # rounded dark app tile with a clean red "A"
     radius = int(S * 0.22)
-    tile = Image.new("RGBA", (S, S), DARK)
+    tile = Image.new("RGBA", (S, S), TILE)
     canvas.paste(tile, (0, 0), rounded_mask(S, radius))
 
     draw = ImageDraw.Draw(canvas)
-    u = S / 100.0           # user units -> pixels
-    w = 9 * u               # stroke width matches the SVG mark
-    # left chevron  <
-    _stroke(draw, [(35 * u, 29 * u), (21 * u, 50 * u), (35 * u, 71 * u)], TEAL, w)
-    # right chevron >
-    _stroke(draw, [(65 * u, 29 * u), (79 * u, 50 * u), (65 * u, 71 * u)], TEAL, w)
-    # "A"
-    _stroke(draw, [(41 * u, 72 * u), (50 * u, 29 * u), (59 * u, 72 * u)], INK, w)
-    _stroke(draw, [(44.5 * u, 57 * u), (55.5 * u, 57 * u)], INK, w)
+    u = S / 100.0            # user units -> pixels
+    w = 11 * u              # stroke width matches the SVG mark
+    # "A": peak + crossbar
+    _stroke(draw, [(27 * u, 79 * u), (50 * u, 21 * u), (73 * u, 79 * u)], RED, w)
+    _stroke(draw, [(37.5 * u, 56 * u), (62.5 * u, 56 * u)], RED, w)
 
     return canvas.resize((MASTER, MASTER), Image.LANCZOS)
 

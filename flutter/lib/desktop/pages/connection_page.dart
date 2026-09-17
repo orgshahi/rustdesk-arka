@@ -351,14 +351,14 @@ class _ConnectionPageState extends State<ConnectionPage>
         // ARKA: hairline separation by luminance, not a hard line.
         border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.07) : const Color(0x14000000)),
         boxShadow: [
-          // soft green halo behind the primary element
+          // very soft accent halo behind the primary element (kept subtle)
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.10),
-            blurRadius: 44,
-            spreadRadius: 2,
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.06),
+            blurRadius: 40,
+            spreadRadius: 1,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.28),
+            color: Colors.black.withOpacity(0.22),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),

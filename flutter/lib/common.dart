@@ -251,21 +251,21 @@ class MyTheme {
   MyTheme._();
 
   // ======================================================================
-  // ARKA BRAND PALETTE  (SINGLE SOURCE OF TRUTH — swap these for the final
-  // official Arka palette when it arrives; nothing else needs to change.)
-  // Temporary placeholder: a modern, professional teal aligned with Arka's
-  // navy/teal identity. Original RustDesk accent was Color(0xFF0071FF).
+  // ARKA BRAND PALETTE  (SINGLE SOURCE OF TRUTH)
+  // Dark = black + red, Light = white + red. One soft-red accent token drives
+  // buttons / active items / key icons. Swap `accent` alone to rebrand.
   // See ARKA_CUSTOMIZATION.md.
-  // --- surfaces (dark-first) ---
-  static const Color arkaBg = Color(0xFF0C1311); // app background
-  static const Color arkaSurface = Color(0xFF141D1A); // panels & cards (+1 step)
-  static const Color arkaBorder = Color(0x12FFFFFF); // rgba(255,255,255,.07)
-  static const Color arkaText = Color(0xFFE8EDEB); // primary text
-  static const Color arkaTextDim = Color(0xFF8A9490); // secondary text
-  // --- single accent token (swap this one line for the final Arka color) ---
-  static const Color accent = Color(0xFF34E0A1); // mint — primary action only
-  static const Color accent50 = Color(0x7734E0A1);
-  static const Color accent80 = Color(0xAA34E0A1);
+  // --- surfaces (dark, neutral near-black) ---
+  static const Color arkaBg = Color(0xFF131315); // app background (near-black)
+  static const Color arkaSurface = Color(0xFF1D1D20); // panels & cards (+1 step)
+  static const Color arkaBorder = Color(0x14FFFFFF); // rgba(255,255,255,.08)
+  static const Color arkaText = Color(0xFFECECEE); // primary text
+  static const Color arkaTextDim = Color(0xFF9A9AA0); // secondary text
+  // --- single accent token (soft, non-harsh red) ---
+  static const Color accent = Color(0xFFE24A4A); // soft red — primary action
+  static const Color accent50 = Color(0x77E24A4A);
+  static const Color accent80 = Color(0xAAE24A4A);
+  static const Color onAccent = Colors.white; // text/icon on the red accent
   static const Color button = accent;
   static const Color idColor = accent;
   static const Color cmIdColor = accent;
@@ -454,7 +454,7 @@ class MyTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: MyTheme.accent,
         // ARKA: dark ink on the mint accent for contrast (light theme).
-        foregroundColor: MyTheme.arkaBg,
+        foregroundColor: MyTheme.onAccent,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(MyTheme.radiusControl),
@@ -497,7 +497,7 @@ class MyTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: false,
     brightness: Brightness.dark,
-    // ARKA: dark-first surfaces — bg #0C1311, panels/cards #141D1A one step up.
+    // ARKA: dark-first neutral surfaces — bg #131315, panels/cards #1D1D20.
     hoverColor: Color(0xFF1B2623),
     scaffoldBackgroundColor: arkaBg,
     dialogBackgroundColor: arkaSurface,
@@ -571,7 +571,7 @@ class MyTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: MyTheme.accent,
         // ARKA: dark ink on the mint accent (white would fail contrast).
-        foregroundColor: MyTheme.arkaBg,
+        foregroundColor: MyTheme.onAccent,
         disabledForegroundColor: Colors.white70,
         disabledBackgroundColor: Colors.white10,
         elevation: 0,
@@ -605,7 +605,7 @@ class MyTheme {
       surface: arkaSurface,
       onBackground: arkaText,
       onSurface: arkaText,
-      onPrimary: arkaBg,
+      onPrimary: onAccent,
     ),
     popupMenuTheme: PopupMenuThemeData(
         shape: RoundedRectangleBorder(

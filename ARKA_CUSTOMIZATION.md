@@ -95,32 +95,33 @@ name were touched** (those break the build / updater / auto-update).
 | ProductName | `RustDesk` | `Arka` |
 | InternalName / OriginalFilename | `rustdesk` / `rustdesk.exe` | **unchanged** (technical — used by `get_license_from_exe_name`) |
 
-### Design system — dark, mint-accented
+### Design system — dark (black + red) / light (white + red)
 **File:** `flutter/lib/common.dart` — `class MyTheme` (single source of truth)
 
-Dark-first design system. **To apply the final Arka brand colour, change the one
-`accent` line** — everything else derives from the tokens.
+**To rebrand, change the one `accent` line** — everything else derives from the
+tokens. The red was contrast-checked with the `ui-ux-pro-max` skill.
 
 | Token | Value | Role |
 |-------|-------|------|
-| `arkaBg` | `#0C1311` | app background |
-| `arkaSurface` | `#141D1A` | panels & cards (one step up) |
-| `arkaBorder` | `rgba(255,255,255,.07)` | hairline separation |
-| `arkaText` | `#E8EDEB` | primary text |
-| `arkaTextDim` | `#8A9490` | secondary text |
-| **`accent`** | **`#34E0A1`** | **the single accent — primary action, active item, key icons** |
+| `arkaBg` | `#131315` | dark app background (near-black) |
+| `arkaSurface` | `#1D1D20` | dark panels & cards (one step up) |
+| `arkaBorder` | `rgba(255,255,255,.08)` | hairline separation (dark) |
+| `arkaText` | `#ECECEE` | dark primary text |
+| `arkaTextDim` | `#9A9AA0` | dark secondary text |
+| **`accent`** | **`#D13438`** | **single red accent — buttons, active item, key icons** |
+| `onAccent` | `#FFFFFF` | text/icon on the red accent |
 | `accent50` / `accent80` | 47% / 67% of accent | derived |
 | `button` / `idColor` / `cmIdColor` | `= accent` | derived |
-| `radiusCard` | `16` | cards & panels |
-| `radiusControl` | `12` | buttons & inputs |
-| `radiusPill` | `999` | chips & badges |
+| `radiusCard` / `radiusControl` / `radiusPill` | `16` / `12` / `999` | radii |
 
-Wired through the dark `ThemeData`: scaffold/dialog/card surfaces, filled
-rounded-12 inputs with a hairline border and an accent focus ring, flat
-(`elevation: 0`) accent buttons with **dark ink** (white on mint fails
-contrast), and `colorScheme` primary/secondary/surface/onPrimary.
+**Contrast (WCAG):** white-on-red **4.93**, red-on-dark **3.76**, red-on-white
+**4.93** — buttons use white text (`onAccent`); red is used for large text/icons
+elsewhere.
 
-Surfaces are separated by **luminance + hairline**, never a heavy rule.
+Light theme: soft off-white ground `#F2F4F5` with **white cards** above it,
+`black87` text, white-on-red buttons; card borders are theme-aware (hairline
+white on dark, black 8% on light). Surfaces separate by **luminance + hairline**,
+never a heavy rule.
 
 **Dark-first:** `MyTheme.getThemeModePreference()` returns `ThemeMode.dark` when
 no preference is stored (fresh config). An explicit light/dark/system choice made
@@ -165,7 +166,7 @@ sizes/formats** of the originals (so no layout breaks). Generator kept at
 |---|------|--------|
 | 1 | **Server values** | ✅ **Hardcoded + locked.** Rendezvous/Relay `desk.arka.ir`, key `tl7Vqj9…` in `libs/hbb_common/src/config.rs` (`ARKA_*_DEFAULT`), forced into `OVERWRITE_SETTINGS` so users cannot change them. API derives to `http://desk.arka.ir:21114`. Build-time env still overrides. Verified baked into `librustdesk.dll`. |
 | 2 | **Logo / icons** | ✅ **ArkaDesk `<A>` mark** (teal chevrons + light A). Transparent SVG in-app (`flutter/assets/icon.svg`, `res/logo.svg`); dark rounded tile for app icons (ico/png, exact sizes) via `tools/gen_arka_icons.py`. |
-| 3 | **Brand accent** | ✅ Mint `#34E0A1` (single `accent` token). Change that one line for a different brand colour. |
+| 3 | **Brand accent** | ✅ Refined red `#D13438` (AA-checked, single `accent` token). Change that one line to rebrand. |
 | 4 | **App display name → "Arka"** | ✅ Done — full identity switch (see below). |
 | 5 | **Website / contact** | ✅ Links → `arka.ir`; About page shows company, bilingual description, and contact (arka.ir · 021-91300476 · info@arka.ir). |
 

@@ -4,10 +4,8 @@ Company: **Rayan Samaneh Arka (شرکت رایان سامانه آرکا)**
 Goal: a Windows x64 RustDesk client, Arka-branded, that connects to the Arka
 self-hosted server with **zero end-user configuration**.
 
-> **Status: TEST / PREVIEW build.** Logo, icons and colors are temporary
-> placeholders (see [Placeholders](#placeholders-to-finish-later)). The real
-> server values still need to be provided. Nothing here is final except the
-> mechanism.
+> **Status: PRODUCTION.** Connects to `desk.arka.ir` (locked), ArkaDesk red
+> identity, About + contact filled. Built for Windows x64.
 
 ---
 
@@ -133,7 +131,7 @@ in Settings is still honoured.
 |------|------|--------|
 | Left pane | `desktop/pages/desktop_home_page.dart` | Arka logo + wordmark header with divider (replaced bare centered logo + "Powered by"); pane 200 → 240 px |
 | ID / One-time password | same | thin 2 px accent bars → rounded surface **cards** (radius 16, hairline border, small tracked labels, heavier values) |
-| Connect panel | `desktop/pages/connection_page.dart` | flat outline → elevated **card** (radius 16, hairline border, **soft green halo** behind this primary element); Connect button 28 → 36 px |
+| Connect panel | `desktop/pages/connection_page.dart` | flat outline → elevated **card** (radius 16, hairline border, **soft red halo** behind this primary element); Connect button 28 → 36 px |
 | Peer rows | `common/widgets/peer_card.dart` | list rows radius 5 → 12 (card-like); hover: hard 2 px accent border → accent wash (6%) + low-opacity edge (45%) |
 
 **Still open (not implemented):** the narrow icon **navigation sidebar** and the
@@ -142,10 +140,10 @@ column" with navigation in the top tab bar. This is a genuine structural rebuild
 and is best done with a local Flutter toolchain (live hot reload) rather than
 blind edits validated by ~50-minute CI builds.
 
-### Logo & icons (temporary placeholders)
-A modern rounded-square **teal "A" monogram** was generated at the **exact
-sizes/formats** of the originals (so no layout breaks). Generator kept at
-`tools/gen_arka_icons.py` (copy) for regeneration.
+### Logo & icons
+A clean minimal **red "A"** mark (peak + crossbar, `#D13438`) — transparent SVG
+in-app, dark rounded tile for app icons — generated at the **exact sizes/formats**
+of the originals (so no layout breaks) via `tools/gen_arka_icons.py`.
 
 | File | Format / sizes |
 |------|----------------|

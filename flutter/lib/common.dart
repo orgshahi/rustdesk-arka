@@ -261,10 +261,11 @@ class MyTheme {
   static const Color arkaBorder = Color(0x14FFFFFF); // rgba(255,255,255,.08)
   static const Color arkaText = Color(0xFFECECEE); // primary text
   static const Color arkaTextDim = Color(0xFF9A9AA0); // secondary text
-  // --- single accent token (soft, non-harsh red) ---
-  static const Color accent = Color(0xFFE24A4A); // soft red — primary action
-  static const Color accent50 = Color(0x77E24A4A);
-  static const Color accent80 = Color(0xAAE24A4A);
+  // --- single accent token (refined red; AA-checked) ---
+  // white-on-red 4.93, red-on-dark 3.76, red-on-white 4.93 (WCAG).
+  static const Color accent = Color(0xFFD13438); // refined red — primary action
+  static const Color accent50 = Color(0x77D13438);
+  static const Color accent80 = Color(0xAAD13438);
   static const Color onAccent = Colors.white; // text/icon on the red accent
   static const Color button = accent;
   static const Color idColor = accent;

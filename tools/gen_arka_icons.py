@@ -50,7 +50,7 @@ def load_font(px):
     return ImageFont.load_default()
 
 
-RED = (226, 74, 74, 255)     # #E24A4A  soft brand red
+RED = (209, 52, 56, 255)     # #D13438  refined brand red
 TILE = (29, 29, 32, 255)     # #1D1D20  dark app tile
 
 

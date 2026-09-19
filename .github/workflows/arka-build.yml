@@ -141,8 +141,33 @@ jobs:
           python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec
           mv ./flutter/build/windows/x64/runner/Release ./arka
 
-      - name: Upload Arka Windows build
+      - name: Upload Arka Windows build (portable folder)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: arka-windows-x64
           path: arka
+
+      # Single self-extracting exe: bundles the whole ./arka folder into ONE
+      # ArkaDesk.exe the customer just runs (it unpacks to a temp dir and
+      # launches arka.exe; the app's own "Install" button still installs).
+      - name: Build single self-extracting exe
+        shell: bash
+        run: |
+          sed -i '/dpiAware/d' res/manifest.xml
+          pushd ./libs/portable
+          pip3 install -r requirements.txt
+          python3 ./generate.py -f ../../arka -o . -e ../../arka/arka.exe
+          popd
+          mkdir -p ./out
+          if [ -f ./target/release/rustdesk-portable-packer.exe ]; then
+            mv ./target/release/rustdesk-portable-packer.exe ./out/ArkaDesk.exe
+          else
+            mv ./libs/portable/target/release/rustdesk-portable-packer.exe ./out/ArkaDesk.exe
+          fi
+          ls -l ./out/ArkaDesk.exe
+
+      - name: Upload single exe
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ArkaDesk-single-exe
+          path: out/ArkaDesk.exe
